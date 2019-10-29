@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html id="canvas">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Happy birthday!</title>
+</head>
+
+<style>
+@font-face {
+    font-family: 'Hellvetica';
+    src: url('Hellvetica.ttf')
+}
+
+html, 
+body {
+    height: 100%;
+    font-family: Hellvetica, Helvetica;
+}
+#gift {
+    width: 50px;
+    position: absolute;
+}
+</style>
+
+<body>
+    <p>Click on the box to get your present!</p>
+    <img id="gift" src="giftbox.svg" />
+    <p id="debug"></p>
+    <script type="text/javascript">
+
+        var giftWidth = 50
+        var giftHeight = 50
+        var distanceThreshold = 50
+
+        // Run javascript on page loaded
+        function autorun() {
+
+            var width = window.innerWidth
+            var height = window.innerHeight
+            var ratio = width/height
+
+            // Get mouse position and move gift
+            function findScreenCoords(mouseEvent) {
+
+                // M: Mouse
+                // G: Gift
+                // D: Distance
+
+                // Get mouse position
+                var xM
+                var yM
+                if (mouseEvent) {
+                    xM = mouseEvent.screenX
+                    yM = mouseEvent.screenY
+                } else {
+                    xM = window.event.screenX
+                    yM = window.event.screenY
+                }
+
+                // Get gift posititon
+                var gift = document.getElementById("gift")
+                var xG = window.scrollX + gift.getBoundingClientRect().left
+                var yG = window.scrollY + gift.getBoundingClientRect().top
+
+                // Get distance
+                var xD = xM - xG
+                var yD = yM - yG - 100
+                var hD = Math.sqrt(Math.pow(xD, 2) + Math.pow(yD, 2))
+
+
+
+                // Move gift relatively
+                if (hD < distanceThreshold) {
+
+                    // Calculate new x position 
+                    var newXG = 0
+                    if (xD <= 0) {
+                        newXG = (xG + distanceThreshold)
+                    } else {
+                        newXG = (xG - distanceThreshold)
+                    }
+                    console.log("xG: " + xG)
+                    console.log("newXG: " + newXG)
+                    
+                    // Calculate new y position
+                    var newYG = 0
+                    if (yD <= 0) {
+                        newYG = (yG + distanceThreshold)
+                    } else {
+                        newYG = (yG - distanceThreshold)
+                    }
+                    console.log("yD: " + yD)
+                    console.log("yG: " + yG)
+                    console.log("New yG: " + newYG)
+
+                    gift.style.left = newXG + "px"
+                    gift.style.top = newYG + "px"
+                }
+
+                document.getElementById("debug").innerHTML = "Mouse: " + xM + ", " + yM + "<br/>" + 
+                "Gift: " + xG + ", " + yG + "<br/>" + 
+                "Distance: " + xD + ", " + yD + ", " + hD + "<br/>" + 
+                "Ratio: " + ratio
+            }
+            document.getElementById("canvas").onmousemove = findScreenCoords
+
+            // Position gift in middle of screen
+            var gift = document.getElementById("gift")
+            gift.style.left = width/2 + "px"
+            gift.style.top = height/2 + "px"
+        }
+        if (window.addEventListener) window.addEventListener("load", autorun, false)
+        else if (window.attachEvent) window.attachEvent("onload", autorun)
+        else window.onload = autorun
+    </script>
+</body>
