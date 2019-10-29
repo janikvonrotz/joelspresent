@@ -20,11 +20,24 @@ body {
 #gift {
     width: 50px;
     position: absolute;
+    display: none;
 }
+.hide {
+    display: none;
+}
+
+@media (pointer: fine) {
+  #gift {
+    display: block;
+  }
+}
+
 </style>
 
 <body>
     <p>Click on the box to get your present!</p>
+    <p>Present will only displayed on desktop.</p>
+    <p class="hide">HEY YOU CHEATER! THERE IS NOTHING TO SEE HERE!</p>
     <img id="gift" src="giftbox.svg" />
     <p id="debug"></p>
     <script type="text/javascript">
@@ -60,8 +73,8 @@ body {
 
                 // Get gift posititon
                 var gift = document.getElementById("gift")
-                var xG = window.scrollX + gift.getBoundingClientRect().left
-                var yG = window.scrollY + gift.getBoundingClientRect().top
+                var xG = window.scrollX + gift.getBoundingClientRect().left + giftWidth/2
+                var yG = window.scrollY + gift.getBoundingClientRect().top + giftHeight/2
 
                 // Get distance
                 var xD = xM - xG
@@ -75,33 +88,34 @@ body {
 
                     // Calculate new x position 
                     var newXG = 0
+                    var distanceX = Math.sqrt(Math.pow(hD, 2) - Math.pow(yD, 2))
                     if (xD <= 0) {
-                        newXG = (xG + distanceThreshold)
+                        newXG = (xG + distanceX)
                     } else {
-                        newXG = (xG - distanceThreshold)
+                        newXG = (xG - distanceX)
                     }
-                    console.log("xG: " + xG)
-                    console.log("newXG: " + newXG)
+                    // console.log("xG: " + xG)
+                    // console.log("newXG: " + newXG)
                     
                     // Calculate new y position
                     var newYG = 0
+                    var distanceY = Math.sqrt(Math.pow(hD, 2) - Math.pow(xD, 2))
                     if (yD <= 0) {
-                        newYG = (yG + distanceThreshold)
+                        newYG = (yG + distanceY)
                     } else {
-                        newYG = (yG - distanceThreshold)
+                        newYG = (yG - distanceY)
                     }
-                    console.log("yD: " + yD)
-                    console.log("yG: " + yG)
-                    console.log("New yG: " + newYG)
+                    // console.log("yG: " + yG)
+                    // console.log("New yG: " + newYG)
 
-                    gift.style.left = newXG + "px"
-                    gift.style.top = newYG + "px"
+                    gift.style.left = newXG - giftWidth/2 + "px"
+                    gift.style.top = newYG - giftHeight/2 + "px"
                 }
 
-                document.getElementById("debug").innerHTML = "Mouse: " + xM + ", " + yM + "<br/>" + 
-                "Gift: " + xG + ", " + yG + "<br/>" + 
-                "Distance: " + xD + ", " + yD + ", " + hD + "<br/>" + 
-                "Ratio: " + ratio
+                // document.getElementById("debug").innerHTML = "Mouse: " + xM + ", " + yM + "<br/>" + 
+                // "Gift: " + xG + ", " + yG + "<br/>" + 
+                // "Distance: " + xD + ", " + yD + ", " + hD + "<br/>" + 
+                // "Ratio: " + ratio
             }
             document.getElementById("canvas").onmousemove = findScreenCoords
 
